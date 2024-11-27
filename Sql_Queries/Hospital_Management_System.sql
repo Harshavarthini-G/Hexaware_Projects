@@ -79,50 +79,6 @@ insert into Room_Allocation(Room_No, Pid, Admission_Date, Release_Date) values
 
 alter table Room_Allocation rename column Pid to Patient_ID;
 
--- update Room_Allocation
--- set Release_Date = '2017-01-30'
--- where Room_No = 'R0004' and Pid = 'P0001' and Admission_Date = '2017-01-01';
-
--- insert into Room_Allocation (Room_No, Pid, Admission_Date, Release_Date) 
--- values ('R0004', 'P0001', '2017-01-01', '2017-01-30');
-
 drop table Room_Allocation;
 
 select * from Room_Allocation;
-
--- 1. Display the patients who were admitted in the month of january
-
-select Patient_Master.Patient_ID, Patient_Master.Name from Patient_Master
-join Room_Allocation on Room_Allocation.Patient_ID = Patient_Master.Patient_ID
-where extract(month from Admission_Date) = 1;
-
--- 2. Display the female patient who is not suffering from ashma
-
-select Patient_ID, Name from Patient_Master
-where Gender = 'F' and Disease not like '%Asthma%';
-
--- 3. Count the number of male and female patients
-
-select Gender, count(*) from Patient_Master
-group by Gender;
-
--- 4. Display the patient_id,patient_name, doctor_id, doctor_name, room_no, room_type and admission_date(alias name)
-
-select Patient_Master.Patient_ID, Patient_Master.Name, Doctor_Master.Doctor_ID, Doctor_Master.Doctor_Name,
-Room_Master.Room_No, Room_Master.Room_Type, Room_Allocation.Admission_Date
-from Patient_Master 
-join Room_Allocation on Room_Allocation.Patient_ID = Patient_Master.Patient_ID
-join Room_Master on Room_Master.Room_No = Room_Allocation.Room_No
-join Doctor_Master on Doctor_Master.Doctor_ID = Patient_Master.Doctor_ID;
-
--- 5. Display the room_no which was never allocated to any patient
-
-select Room_Master.Room_No
-from Room_Master
-left join Room_Allocation on Room_Allocation.Room_No = Room_Master.Room_No
-where Room_Allocation.Room_No is null;
-
--- 6. Display the room_no, room_type which are allocated more than once
-
-select Room_No, count(*) from Room_Allocation
-group by Room_No having count(*) > 1;
